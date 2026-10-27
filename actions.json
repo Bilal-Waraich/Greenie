@@ -1,0 +1,100 @@
+[
+    {
+        "key": "recycle_bottle",
+        "label": "Recycled a bottle (PET or glass)",
+        "points": 10,
+        "daily_limit": 5,
+        "co2_g": 40
+    },
+    {
+        "key": "recycle_can",
+        "label": "Recycled a can",
+        "points": 10,
+        "daily_limit": 5,
+        "co2_g": 100
+    },
+    {
+        "key": "recycle_paper",
+        "label": "Recycled paper or cardboard",
+        "points": 10,
+        "daily_limit": 3,
+        "co2_g": 30
+    },
+    {
+        "key": "reusable_cup",
+        "label": "Used a reusable cup or bottle",
+        "points": 10,
+        "daily_limit": 3,
+        "co2_g": 25
+    },
+    {
+        "key": "reusable_bag",
+        "label": "Used a reusable bag",
+        "points": 5,
+        "daily_limit": 3,
+        "co2_g": 20
+    },
+    {
+        "key": "plant_meal",
+        "label": "Ate a plant-based meal",
+        "points": 15,
+        "daily_limit": 3,
+        "co2_g": 1500
+    },
+    {
+        "key": "green_commute",
+        "label": "Took public transport, bike or walked instead of a taxi or car",
+        "points": 15,
+        "daily_limit": 2,
+        "co2_g": 1000
+    },
+    {
+        "key": "second_hand",
+        "label": "Bought second-hand or repaired instead of buying new",
+        "points": 20,
+        "daily_limit": 1,
+        "co2_g": 5000
+    },
+    {
+        "key": "short_shower",
+        "label": "Took a shower under 5 minutes",
+        "points": 10,
+        "daily_limit": 1,
+        "co2_g": 100
+    },
+    {
+        "key": "unplug_devices",
+        "label": "Unplugged electronics and chargers when not in use",
+        "points": 5,
+        "daily_limit": 1,
+        "co2_g": 10
+    },
+    {
+        "key": "no_plastic_cutlery",
+        "label": "Refused single-use plastic cutlery or straws",
+        "points": 5,
+        "daily_limit": 3,
+        "co2_g": 10
+    },
+    {
+        "key": "line_dry",
+        "label": "Air-dried clothes instead of using a tumble dryer",
+        "points": 15,
+        "daily_limit": 1,
+        "co2_g": 150
+    },
+    {
+        "key": "own_container",
+        "label": "Brought own container for takeout or leftovers",
+        "points": 10,
+        "daily_limit": 2,
+        "co2_g": 45
+    },
+    {
+        "key": "paperless_lecture",
+        "label": "Went completely paperless for a lecture (no printed slides)",
+        "points": 10,
+        "daily_limit": 2,
+        "co2_g": 100
+    }
+]

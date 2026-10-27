@@ -1,0 +1,38 @@
+[
+    {
+        "key": "first_action",
+        "label": "First action",
+        "rule": "logs",
+        "threshold": 1
+    },
+    {
+        "key": "points_100",
+        "label": "100 points",
+        "rule": "points",
+        "threshold": 100
+    },
+    {
+        "key": "points_500",
+        "label": "500 points",
+        "rule": "points",
+        "threshold": 500
+    },
+    {
+        "key": "points_1000",
+        "label": "1,000 points",
+        "rule": "points",
+        "threshold": 1000
+    },
+    {
+        "key": "streak_7",
+        "label": "7-day streak",
+        "rule": "streak",
+        "threshold": 7
+    },
+    {
+        "key": "streak_30",
+        "label": "30-day streak",
+        "rule": "streak",
+        "threshold": 30
+    }
+]

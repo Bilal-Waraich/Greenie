@@ -1,0 +1,72 @@
+[
+    {
+        "item": "PET bottles",
+        "where": "Back to the shop where you bought them",
+        "note": "Return PET drink bottles to the point of sale."
+    },
+    {
+        "item": "Glass bottles and jars",
+        "where": "Wertstoff-Sammelstelle (glass container)",
+        "note": "Sort by colour. Blue and red glass goes into the green glass container. Open Monday to Saturday, 7:00 to 20:00. Not on Sundays, public holidays or at night."
+    },
+    {
+        "item": "Drinking glasses",
+        "where": "Household waste (Züri-Sack)",
+        "note": "Drinking glasses do not belong in the glass container."
+    },
+    {
+        "item": "Aluminium and tin cans",
+        "where": "Wertstoff-Sammelstelle (small metal)",
+        "note": "Drink cans and food cans count as small metal. The item must fit through the container opening of 22 x 44 cm."
+    },
+    {
+        "item": "Paper",
+        "where": "Kerbside collection",
+        "note": "Tie the paper into bundles. Put it out by 7:00 on collection day, but not earlier than the day before. Collection dates are in the Entsorgungskalender."
+    },
+    {
+        "item": "Cardboard",
+        "where": "Kerbside collection",
+        "note": "Tie the cardboard into bundles. Put it out by 7:00 on collection day, but not earlier than the day before. Collection dates are in the Entsorgungskalender."
+    },
+    {
+        "item": "Batteries",
+        "where": "Point of sale or Sonderabfall-Sammelstelle",
+        "note": "Return them to the shop that sells them, or take them to the Sonderabfall-Sammelstelle at Hagenholz. The Sonderabfallmobil also visits each neighbourhood once a year."
+    },
+    {
+        "item": "Electronic devices",
+        "where": "Recyclinghof or Mobile Recyclinghof",
+        "note": "The Mobile Recyclinghof is free and visits each area 10 to 12 times a year. A Recyclinghof charges a fee for some items. Kerbside pickup costs a fee: call 044 417 77 77."
+    },
+    {
+        "item": "Used clothing",
+        "where": "Selected Wertstoff-Sammelstellen",
+        "note": "Only some collection points take textiles. Clothes must be clean and wearable, in a tear-resistant plastic bag that is tied shut."
+    },
+    {
+        "item": "Food waste",
+        "where": "Green Bioabfall container",
+        "note": "Accepted: bread, meat and fish including bones, rice, dairy, eggs, sauces and coffee grounds, without packaging. Not accepted: plastic bags or compostable bags, except bio bags with a grid print."
+    },
+    {
+        "item": "Light bulbs and LED lamps",
+        "where": "Sonderabfall-Sammelstelle Hagenholz",
+        "note": "Light bulbs, energy-saving lamps and LEDs count as special waste. Take them to Hagenholz or to the Sonderabfallmobil."
+    },
+    {
+        "item": "Plastic packaging and beverage cartons",
+        "where": "RecyBag from the retail trade",
+        "note": "Plastic waste and beverage cartons go into the RecyBag. Buy the bag in many shops in the city and return the full bag to the shops that take it. The city (ERZ) does not sell the bags, so ask the shop for the price."
+    },
+    {
+        "item": "General waste",
+        "where": "Household waste (Züri-Sack)",
+        "note": "Waste with no separate collection goes into the official Züri-Sack."
+    },
+    {
+        "item": "Collection dates and questions",
+        "where": "ERZ app and Entsorgungskalender",
+        "note": "The free ERZ app lists all collections in the city. For questions, call the ERZ Service Center on 044 417 77 77, Monday to Friday, 7:00 to 17:00."
+    }
+]
