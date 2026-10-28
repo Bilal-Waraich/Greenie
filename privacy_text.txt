@@ -1,0 +1,89 @@
+======================================================================
+PART A - SHORT TEXT (register form, S1)
+======================================================================
+
+Greenie stores your email, password (as a secure hash, never in plain
+text), nickname, first and last name, date of birth, university, the
+students you follow and the actions you log. Other students only see
+your nickname, university, points, streak and badges. Your email, name
+and date of birth are never shown to anyone else. Your data is stored
+in the EU, is not sold or shared, and there are no third-party
+trackers. You can delete your account and all your data at any time.
+Questions: greenie.app.team@gmail.com
+
+Checkbox label:
+
+I have read the privacy notice and agree to the processing of my data.
+
+
+======================================================================
+PART B - FULL PRIVACY NOTICE
+======================================================================
+
+GREENIE PRIVACY NOTICE
+Last updated: 28 October 2026
+
+1. Who is responsible
+Greenie is operated by Bean Co. For any question about your data,
+write to greenie.app.team@gmail.com.
+
+2. What data we store
+- Account data: your email address and your password. The password is
+  stored only as a salted hash. We cannot read it.
+- Profile data: your nickname, first name, last name, date of birth
+  and university.
+- Activity data: the eco-actions you log (action, points, estimated
+  CO2 saving, date and time) and the students you follow.
+
+3. Why we store it
+We use your data only to run Greenie:
+- to create your account and log you in and out,
+- to calculate your points, streak, CO2 estimate and badges,
+- to show the weekly leaderboards,
+- to let other students find your profile by nickname and follow you,
+- to show you your own history,
+- to send you a password-reset email if you ask for one.
+
+4. What other students can see
+Other students see only your nickname, university, total points,
+points this week, streak and earned badges. Leaderboards show only
+rank, nickname and points. Your email address, first name, last name
+and date of birth are never shown to other users.
+
+5. Who processes your data
+- Database and login: Supabase, stored in an EU region (Ireland).
+- Website files: GitHub Pages. As with any web host, your IP address
+  may be processed when you open the site.
+- Password-reset emails: sent through a Gmail account, so your email
+  address is processed by Google for this purpose.
+We do not use analytics, advertising or third-party trackers. We do
+not sell your data or share it with anyone else. The people who
+develop the app work with test accounts and seed data only and keep
+no copy of real user data.
+
+6. How long we keep your data
+We keep your data until you delete your account. In the app, choose
+"Delete my account". This removes your login, profile data, logged
+actions and follow relations, and you disappear from all
+leaderboards, search results and following lists. We keep no backups
+of your data.
+
+7. Your rights
+You can ask us at greenie.app.team@gmail.com to give you a copy of
+your data, correct it or delete it. We will answer as soon as we can.
+
+8. Age
+Greenie is for students who are at least 16 years old.
+
+9. Security
+Passwords are stored as salted hashes. All connections use HTTPS.
+Access to the database is limited to the people who run the service.
+
+10. Consent
+By ticking the box on the registration form, you confirm that you
+have read this notice and agree to the processing of your data as
+described here. You can withdraw your consent at any time by deleting
+your account.
+
+11. Changes
+If we change this notice, we will update the date at the top.
