@@ -1,0 +1,29 @@
+# Dependencies and build output
+node_modules/
+dist/
+dist-ssr/
+
+# Environment files: never commit real values. Only .env.example is tracked.
+.env
+.env.*
+!.env.example
+
+# Local Supabase state
+supabase/.temp/
+supabase/.branches/
+
+# Test output
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp

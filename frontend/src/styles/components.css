@@ -1,0 +1,312 @@
+/*
+ * Shared components, built from the Figma components page: buttons, form fields, list rows, the
+ * points badge, the alert banner, the desktop header with navigation and the mobile tab bar.
+ */
+
+/* ---------- Buttons (Figma Button/Primary, Secondary, Disabled) ---------- */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: var(--border-thick) solid var(--color-ink);
+  background: var(--color-sage);
+  box-shadow: var(--shadow-block);
+  color: var(--color-ink-on-sage);
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--color-ink);
+}
+
+.button--secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.button:disabled {
+  background: var(--color-disabled-bg);
+  box-shadow: none;
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.button-stack {
+  display: grid;
+  gap: 14px;
+}
+
+/* ---------- Text links ---------- */
+.text-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-forest);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- Form fields (Figma Field/Default, Field/Error) ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.field__label {
+  margin-bottom: 6px;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+}
+
+.field__input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: var(--border-thick) solid var(--color-ink);
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 15px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.field__input::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+.field__input[aria-invalid='true'] {
+  border-color: var(--color-error-border);
+}
+
+.field__error {
+  margin-top: 6px;
+  color: var(--color-error-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+.form-error {
+  color: var(--color-error-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Consent checkbox ---------- */
+.consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--color-muted-strong);
+  font-size: 12px;
+  line-height: 15px;
+  cursor: pointer;
+}
+
+.consent__box {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: var(--border-thick) solid var(--color-ink);
+  border-radius: 0;
+  background: var(--color-surface);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.consent__box:checked {
+  background: var(--color-sage)
+    linear-gradient(var(--color-ink), var(--color-ink)) center / 8px 8px no-repeat;
+}
+
+/* ---------- List rows (Figma Row/Entry) ---------- */
+.row-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 63px;
+  padding: 10px 14px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.row-link__title {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.row-link__subtitle {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.row-link__chevron {
+  font-family: var(--font-pixel);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.row-list {
+  display: grid;
+  gap: 10px;
+}
+
+/* ---------- Small badge ("Today: +25", "Streak increased!") ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 2px 11px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-highlight);
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---------- Alert banner ("Daily limit reached for this action") ---------- */
+.alert {
+  padding: 9px 13px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-alert-bg);
+  color: var(--color-error-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Desktop header with navigation (Figma Header Desktop, Nav Desktop) ---------- */
+.site-header {
+  display: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-ink);
+  font-family: var(--font-pixel);
+  font-size: 26px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 32px;
+  height: 32px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.site-nav a {
+  padding: 6px 15px;
+  border: var(--border-thin) solid transparent;
+  color: var(--color-muted);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-nav a[aria-current='page'] {
+  border-color: var(--color-ink);
+  background: var(--color-sage);
+  color: var(--color-ink-on-sage);
+}
+
+/* ---------- Mobile tab bar (Figma Tab Bar) ---------- */
+.tab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  min-height: var(--tabbar-height);
+  padding: 9px 9px calc(9px + env(safe-area-inset-bottom));
+  border-top: var(--border-thick) solid var(--color-ink);
+  background: var(--color-surface);
+}
+
+.tab-bar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 63px;
+  border: var(--border-thin) solid transparent;
+  color: var(--color-tab-inactive);
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tab-bar a[aria-current='page'] {
+  border-color: var(--color-ink);
+  background: var(--color-sage);
+  color: var(--color-ink-on-sage);
+}
+
+.tab-bar img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    padding: 0 48px 0 40px;
+    border-bottom: var(--border-thick) solid var(--color-ink);
+    background: var(--color-surface);
+  }
+
+  .tab-bar {
+    display: none;
+  }
+}
