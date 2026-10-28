@@ -1,0 +1,105 @@
+# Greenie deployment. Runs on every push to main, and by hand from the Actions tab ("Run workflow").
+#
+# 1. Checks actions.json and the repository settings.
+# 2. Builds the front end with the Supabase URL and publishable key from the repository variables.
+# 3. Applies new database migrations to the Supabase project and loads actions.json into it
+#    (repository secret SUPABASE_DB_URL, the Session pooler connection string).
+# 4. Publishes the site to GitHub Pages.
+# If any step fails, the site is not updated. The README explains the settings.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+defaults:
+  run:
+    # An explicit bash runs every step with -eo pipefail, so a failing command in a pipe fails the step.
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Check actions.json
+        run: node scripts/check-config.mjs
+
+      - name: Check the repository variables and secret
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          HAS_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
+        run: |
+          missing=""
+          [ -n "$SUPABASE_URL" ] || missing="$missing variable SUPABASE_URL;"
+          [ -n "$SUPABASE_PUBLISHABLE_KEY" ] || missing="$missing variable SUPABASE_PUBLISHABLE_KEY;"
+          [ "$HAS_DB_URL" = "true" ] || missing="$missing secret SUPABASE_DB_URL;"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing in Settings > Secrets and variables > Actions:$missing"
+            exit 1
+          fi
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install front-end packages
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build the front end
+        working-directory: frontend
+        env:
+          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+        run: npm run build
+
+      - name: Set up the Supabase CLI
+        uses: supabase/setup-cli@v3
+        with:
+          version: 2.120.0
+
+      - name: Apply database migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --yes
+
+      - name: Load actions.json into the database
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          command -v psql >/dev/null || { sudo apt-get update && sudo apt-get install -y postgresql-client; }
+          node scripts/actions-to-sql.mjs | psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 --quiet --no-psqlrc
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: frontend/dist
+
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

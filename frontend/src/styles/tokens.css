@@ -1,0 +1,44 @@
+/*
+ * Design tokens taken from the Figma file (reference: mobile 390 x 844 and desktop 1280 x 900 frames).
+ * Three text colours are slightly darker than in Figma, so text meets WCAG AA contrast (4.5:1);
+ * each is marked "contrast" with the Figma value it replaces.
+ */
+:root {
+  /* Colours */
+  --color-page: #dad7cd;
+  --color-surface: #f4f2ec;
+  --color-ink: #344e41;
+  --color-ink-on-sage: #2e453a; /* contrast: Figma #344e41 is 3.98:1 on sage */
+  --color-sage: #a3b18a;
+  --color-green: #588157;
+  --color-forest: #3a5a40;
+  --color-card: #c5cdaf;
+  --color-highlight: #e8e2b0;
+  --color-muted: #55695c; /* on surface: 5.27:1 */
+  --color-muted-strong: #48594e; /* contrast: Figma #55695c is 4.09:1 on page, 3.57:1 on card */
+  --color-tab-inactive: #6c7066; /* contrast: Figma #8e9486 is 2.79:1 on surface */
+  --color-disabled-bg: #c3c1b6;
+  --color-disabled-text: #8e9486;
+  --color-error-text: #8f3a28;
+  --color-error-border: #b5533c;
+  --color-alert-bg: #ebd3c8;
+  --color-gold: #e9c46a;
+  --color-orange: #d98a55;
+  --color-on-forest: #f4f2ec;
+
+  /* Type: Pixelify Sans for headings, labels, buttons and numbers; Inter for body text. */
+  --font-pixel: 'Pixelify Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shapes */
+  --border-thick: 3px;
+  --border-thin: 2px;
+  --shadow-block: 0 4px 0 var(--color-ink);
+
+  /* Layout */
+  --page-gutter: 24px;
+  --content-width: 560px;
+  --form-width: 420px;
+  --header-height: 72px;
+  --tabbar-height: 84px;
+}
