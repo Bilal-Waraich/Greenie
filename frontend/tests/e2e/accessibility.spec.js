@@ -40,6 +40,10 @@ test('visitor screens and their error states', async ({ page }) => {
 
   await page.goto('/forgot-password')
   await expectAccessible(page, 'Forgot password placeholder')
+
+  await page.goto('/privacy')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expectAccessible(page, 'Privacy (visitor)')
 })
 
 test('logged-in screens and states', async ({ page }) => {
@@ -59,7 +63,7 @@ test('logged-in screens and states', async ({ page }) => {
   await expect(page.getByRole('alert')).toBeVisible()
   await expectAccessible(page, 'Log action (limit reached)')
 
-  for (const path of ['/leaderboard', '/guide', '/history', '/students', '/does-not-exist']) {
+  for (const path of ['/leaderboard', '/guide', '/history', '/students', '/privacy', '/does-not-exist']) {
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expectAccessible(page, path)
@@ -80,6 +84,8 @@ test('keyboard only: register, log an action, back to Home, log out', async ({ p
   await page.keyboard.press('Tab')
   await expect(page.getByRole('checkbox')).toBeFocused()
   await page.keyboard.press('Space')
+  await page.keyboard.press('Tab') // the "privacy notice" link in the checkbox label
+  await expect(page.getByRole('link', { name: /^privacy notice/ })).toBeFocused()
   await page.keyboard.press('Tab')
   await expect(page.getByRole('button', { name: 'Create account' })).toBeFocused()
   await page.keyboard.press('Enter')

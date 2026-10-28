@@ -117,7 +117,17 @@
   font-weight: 600;
 }
 
-/* ---------- Consent checkbox ---------- */
+/* ---------- Consent checkbox, with the short privacy text above it ---------- */
+.consent-text {
+  color: var(--color-muted-strong);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.consent-text p + p {
+  margin-top: 6px;
+}
+
 .consent {
   display: flex;
   gap: 10px;
@@ -144,6 +154,11 @@
 .consent__box:checked {
   background: var(--color-sage)
     linear-gradient(var(--color-ink), var(--color-ink)) center / 8px 8px no-repeat;
+}
+
+/* The "privacy notice" link keeps the label's size. */
+.consent__link {
+  font-size: inherit;
 }
 
 /* ---------- List rows (Figma Row/Entry) ---------- */

@@ -1,8 +1,10 @@
 /**
- * S1 Register (US-01): seven required fields, the privacy text with a consent checkbox, and "Create
- * account", which stays disabled until the box is ticked. Every error appears next to its field.
- * The database checks everything again and creates no account if anything is invalid. After success
- * the student is logged in and the route guard opens Home with 0 points and streak 0.
+ * S1 Register (US-01): seven required fields, Bean Co.'s privacy text (Part A of privacy_text.txt)
+ * with a consent checkbox, and "Create account", which stays disabled until the box is ticked. The
+ * words "privacy notice" in the checkbox label open the full notice on the Privacy page in a new tab,
+ * so the form keeps what was typed. Every error appears next to its field. The database checks
+ * everything again and creates no account if anything is invalid. After success the student is
+ * logged in and the route guard opens Home with 0 points and streak 0.
  */
 import { useState } from 'react'
 import { Link } from 'react-router'
@@ -12,6 +14,8 @@ import { isNicknameAvailable, signUp } from '../lib/api.js'
 import { messageFor } from '../lib/errors.js'
 import { zurichToday } from '../lib/format.js'
 import { MESSAGES } from '../lib/messages.js'
+import { PRIVACY } from '../lib/privacy.js'
+import { NOTICE_LINK_WORDS } from '../lib/privacyText.js'
 import { SPRITES } from '../lib/sprites.js'
 import { usePageSetup } from '../lib/usePageSetup.js'
 import { validateRegistration } from '../lib/validation.js'
@@ -20,10 +24,25 @@ import { validateRegistration } from '../lib/validation.js'
 const FIELD_ORDER = ['email', 'password', 'nickname', 'firstName', 'lastName', 'birthDate', 'university']
 
 /**
- * The privacy text shown with the consent checkbox (US-01 AC5), word for word from the Figma
- * registration frame. If Bean Co. supplies a different privacy text, replace it here.
+ * The checkbox label from privacy_text.txt, with its words "privacy notice" as a link to the Privacy
+ * page (the parser guarantees the label contains them).
+ * @returns {import('react').JSX.Element}
  */
-const PRIVACY_TEXT = 'I agree to the privacy notice: my name and date of birth stay private; others see only my nickname and university.'
+function ConsentLabel() {
+  const label = PRIVACY.checkboxLabel
+  const start = label.toLowerCase().indexOf(NOTICE_LINK_WORDS)
+  const end = start + NOTICE_LINK_WORDS.length
+  return (
+    <span>
+      {label.slice(0, start)}
+      <Link to="/privacy" target="_blank" className="text-link consent__link">
+        {label.slice(start, end)}
+        <span className="visually-hidden"> (opens in a new tab)</span>
+      </Link>
+      {label.slice(end)}
+    </span>
+  )
+}
 
 /**
  * Field errors for the codes the sign-up can return.
@@ -168,14 +187,20 @@ export default function Register() {
           <FormField {...fieldProps('university')} label="University" autoComplete="organization" placeholder="e.g. ETH Zurich" />
         </div>
 
+        <div className="consent-text" id="privacy-short-text">
+          {PRIVACY.shortText.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
         <label className="consent">
           <input
             className="consent__box"
             type="checkbox"
             checked={consent}
             onChange={(event) => setConsent(event.target.checked)}
+            aria-describedby="privacy-short-text"
           />
-          <span>{PRIVACY_TEXT}</span>
+          <ConsentLabel />
         </label>
 
         {formError && (

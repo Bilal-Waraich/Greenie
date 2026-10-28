@@ -9,7 +9,7 @@ This README covers milestone 1: registration and login, Home, logging actions wi
 ## Stack
 
 - **Front end:** React 19 with Vite (plain JavaScript), React Router, and `@supabase/supabase-js`. Plain CSS. The fonts (Inter, Pixelify Sans) are served from the site itself; no third-party fonts, trackers or CDNs.
-- **Back end:** Supabase free plan (Postgres and Auth) in an EU region (Frankfurt). All rules (points, daily limits, streaks, privacy) are enforced in the database by Postgres functions; tables are closed to direct access.
+- **Back end:** Supabase free plan (Postgres and Auth) in an EU region (Ireland). All rules (points, daily limits, streaks, privacy) are enforced in the database by Postgres functions; tables are closed to direct access.
 - **Hosting:** GitHub Pages (static files), deployed by GitHub Actions on every push to `main`.
 
 ## Repository layout
@@ -18,6 +18,7 @@ This README covers milestone 1: registration and login, Home, logging actions wi
 actions.json          the action list (edit this to change actions, points, limits; see below)
 guide.json            the "Which bin in Zürich?" guide content (used from milestone 2)
 badges.json           badge definitions (not used yet)
+privacy_text.txt      the privacy text: short text on Register, full notice on the Privacy page (see below)
 frontend/             the web app (React + Vite)
   src/                pages, components, lib (API calls, validation, formatting), styles, Figma sprites
   scripts/            local helpers: database reset, demo data, build step
@@ -27,7 +28,7 @@ supabase/             the database
   migrations/         SQL migrations: tables, access rules, functions
   tests/database/     database tests (pgTAP)
   config.toml         local development settings only
-scripts/              checks and loads actions.json (used by the deploy and locally)
+scripts/              checks actions.json and privacy_text.txt, loads actions.json (used by the deploy and locally)
 .github/workflows/    the deploy workflow
 ```
 
@@ -59,7 +60,7 @@ Demo accounts after `npm run seed:local`: `demo01@greenie.test` to `demo25@green
 
 Every push to `main` runs `.github/workflows/deploy.yml`, which:
 
-1. checks `actions.json` (stops with a message naming the wrong entry if it is invalid);
+1. checks `actions.json` and `privacy_text.txt` (stops with a message naming the problem if one is invalid);
 2. builds the front end with the Supabase URL and publishable key from the repository variables;
 3. applies new database migrations to the Supabase project;
 4. loads `actions.json` into the database;
@@ -97,13 +98,22 @@ To change actions, edit `actions.json` on GitHub (or locally) and commit to `mai
 - **Remove an action:** it disappears from the Log screen. Past logs of it still count.
 - **Change a key:** counts as removing one action and adding a new one. Keep keys stable.
 - **Add an action:** it appears on the Log screen. The eight original actions have their own pixel icon; any other action shows the leaf icon.
-- **A mistake in the file** (missing field, unknown field, duplicate key, 0 points, text instead of a number): the deploy stops at "Check actions.json" with a message naming the entry, and nothing changes. Fix the file and commit again.
+- **A mistake in the file** (missing field, unknown field, duplicate key, 0 points, text instead of a number): the deploy stops at "Check actions.json and privacy_text.txt" with a message naming the entry, and nothing changes. Fix the file and commit again.
 
 Locally, run `npm run db:reset` in `frontend/` after editing the file (this also deletes local test data), or load just the actions with:
 
 ```
 node scripts/actions-to-sql.mjs | psql "postgresql://postgres:postgres@127.0.0.1:56322/postgres" -v ON_ERROR_STOP=1
 ```
+
+## Editing the privacy text (`privacy_text.txt`)
+
+The app shows this file word for word, read from the repository when the site is built:
+
+- **Part A** (between the "PART A" and "PART B" headings): the short text appears above the consent checkbox on the registration screen, and the text after the line `Checkbox label:` is the checkbox's label. The words "privacy notice" in the label link to the Privacy page, which opens in a new tab.
+- **Part B** (after the "PART B" heading): the full notice on the Privacy page (`/privacy`), open to everyone. The first line is the page title; a line starting with a number and a full stop ("1. Who is responsible") starts a section; a line starting with "- " starts a list item, and indented lines continue it; a blank line starts a new paragraph. Email addresses become email links.
+
+Lines can be wrapped anywhere: lines of one paragraph are joined. Edit the file and commit to `main` like `actions.json`; the site shows the new text after the deploy. The deploy stops at "Check actions.json and privacy_text.txt", and nothing changes, if a "PART A" or "PART B" line, the `Checkbox label:` line, the short text or the words "privacy notice" in the label are missing.
 
 ## Editing the guide (`guide.json`)
 
@@ -115,7 +125,8 @@ Used from milestone 2. Each entry has `item`, `where` and `note`.
 - **Database tables:** `users` (nickname, first name, last name, date of birth, university, created at), `action_logs` (action, points, CO₂ grams, time in UTC, Zürich date), `follows` (milestone 2), `actions` (loaded from `actions.json`).
 - **What other students see** (from milestone 2): only nickname, university, points and streak. No database function returns anyone's email, first name, last name or date of birth; the database tests check this for every function.
 - Tables can't be read or written directly through the API (row-level security without policies, and no privileges for the API roles). The browser can only call four functions in milestone 1.
-- No analytics, trackers or third-party requests. Data is stored in the EU (Frankfurt).
+- No analytics, trackers or third-party requests. Data is stored in the EU (Ireland).
+- The privacy text students agree to is Bean Co.'s `privacy_text.txt` (see above).
 
 ## Keeping it running
 
@@ -123,7 +134,7 @@ Supabase pauses a free project after a period of low activity. Supabase's docume
 
 ## Restoring from scratch
 
-The free plan has no backups. If the project is lost: create a new Supabase project (EU, Frankfurt), apply the Auth settings above, update the three GitHub settings, and run the Deploy workflow. The migrations and `actions.json` rebuild everything except user accounts and logs. Demo data for local work comes from `npm run seed:local`.
+The free plan has no backups. If the project is lost: create a new Supabase project in an EU region (this one is in Ireland), apply the Auth settings above, update the three GitHub settings, and run the Deploy workflow. The migrations and `actions.json` rebuild everything except user accounts and logs. Demo data for local work comes from `npm run seed:local`.
 
 ## Email
 
@@ -136,8 +147,8 @@ Run from `frontend/` unless noted; the local Supabase stack must be running.
 | Kind | Command | What it covers |
 |---|---|---|
 | Database | `supabase test db` (repository root) | access rules and privacy, sign-up validation, points and daily limits, streaks, weeks, the `actions.json` loader |
-| Unit | `npm run test:unit` | form validation, formatting, error messages, `actions.json` rules |
-| Browser | `npm run test:e2e` | registration, login, logout, route guards, logging, limits, streaks, `actions.json` changes, privacy, accessibility (axe), no horizontal scrolling at 360–1280 px |
+| Unit | `npm run test:unit` | form validation, formatting, error messages, `actions.json` rules, reading `privacy_text.txt` word for word |
+| Browser | `npm run test:e2e` | registration, the privacy text and Privacy page, login, logout, route guards, logging, limits, streaks, `actions.json` changes, privacy, accessibility (axe), no horizontal scrolling at 360–1280 px |
 
 The browser tests need Playwright's browsers once: `npx playwright install chromium firefox webkit`.
 

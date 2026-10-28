@@ -1,10 +1,10 @@
 /**
- * Registration tests (US-01): field errors next to each field, consent gating the button, duplicate
- * email and nickname in another letter case, the age rule, and a successful sign-up landing on Home
- * with 0 points and streak 0.
+ * Registration tests (US-01): Bean Co.'s privacy text and the link to the full notice, consent gating
+ * the button, field errors next to each field, duplicate email and nickname in another letter case,
+ * the age rule, and a successful sign-up landing on Home with 0 points and streak 0.
  */
 import { expect, test } from '@playwright/test'
-import { createStudent, fillRegistration, homeValues, newStudent } from './helpers.js'
+import { createStudent, fillRegistration, homeValues, newStudent, PRIVACY } from './helpers.js'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/register')
@@ -12,12 +12,33 @@ test.beforeEach(async ({ page }) => {
 
 test('"Create account" stays disabled until the consent box is ticked (US-01 AC5)', async ({ page }) => {
   const button = page.getByRole('button', { name: 'Create account' })
-  await expect(page.getByText('I agree to the privacy notice')).toBeVisible()
+  for (const paragraph of PRIVACY.shortText) {
+    await expect(page.getByText(paragraph, { exact: true })).toBeVisible()
+  }
+  await expect(page.locator('label.consent')).toHaveText(
+    PRIVACY.checkboxLabel.replace('privacy notice', 'privacy notice (opens in a new tab)'),
+  )
   await expect(button).toBeDisabled()
   await page.getByRole('checkbox').check()
   await expect(button).toBeEnabled()
   await page.getByRole('checkbox').uncheck()
   await expect(button).toBeDisabled()
+})
+
+test('"privacy notice" opens the full notice in a new tab and leaves the box unticked', async ({ page }) => {
+  const link = page.getByRole('link', { name: /^privacy notice/ })
+  await expect(link).toHaveAttribute('target', '_blank')
+  const [notice] = await Promise.all([page.waitForEvent('popup'), link.click()])
+  await expect(notice).toHaveURL(/\/privacy$/)
+  const [title, ...blocks] = PRIVACY.notice
+  await expect(notice.getByRole('heading', { level: 1 })).toHaveText(title.text)
+  for (const block of blocks.filter((item) => item.type === 'heading')) {
+    await expect(notice.getByRole('heading', { level: 2, name: block.text })).toBeVisible()
+  }
+  await expect(notice.getByRole('link', { name: 'greenie.app.team@gmail.com' }).first()).toHaveAttribute(
+    'href', 'mailto:greenie.app.team@gmail.com',
+  )
+  await expect(page.getByRole('checkbox')).not.toBeChecked()
 })
 
 test('every invalid field shows its error next to it, and no account is created (US-01 AC1, AC4)', async ({ page }) => {

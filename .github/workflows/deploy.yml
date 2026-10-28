@@ -1,6 +1,6 @@
 # Greenie deployment. Runs on every push to main, and by hand from the Actions tab ("Run workflow").
 #
-# 1. Checks actions.json and the repository settings.
+# 1. Checks actions.json, privacy_text.txt and the repository settings.
 # 2. Builds the front end with the Supabase URL and publishable key from the repository variables.
 # 3. Applies new database migrations to the Supabase project and loads actions.json into it
 #    (repository secret SUPABASE_DB_URL, the Session pooler connection string).
@@ -44,7 +44,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Check actions.json
+      - name: Check actions.json and privacy_text.txt
         run: node scripts/check-config.mjs
 
       - name: Check the repository variables and secret

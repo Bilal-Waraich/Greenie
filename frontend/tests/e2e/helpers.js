@@ -7,6 +7,7 @@ import { expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { readLocalStatus, REPO_ROOT } from '../../scripts/local-supabase.mjs'
+import { parsePrivacyText } from '../../src/lib/privacyText.js'
 
 const local = readLocalStatus()
 
@@ -20,6 +21,9 @@ export const API_URL = local.apiUrl
 
 /** The repository's actions.json, as the app should show it. */
 export const ACTIONS = JSON.parse(readFileSync(join(REPO_ROOT, 'actions.json'), 'utf8'))
+
+/** The repository's privacy_text.txt, as the app should show it. */
+export const PRIVACY = parsePrivacyText(readFileSync(join(REPO_ROOT, 'privacy_text.txt'), 'utf8'))
 
 let counter = 0
 

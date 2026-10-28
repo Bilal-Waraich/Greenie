@@ -423,8 +423,12 @@
 .register-grid [data-area='birthDate'] { grid-area: birth; }
 .register-grid [data-area='university'] { grid-area: university; }
 
-.auth-form .consent {
+.auth-form .consent-text {
   margin-top: 6px;
+}
+
+.auth-form .consent {
+  margin-top: 2px;
 }
 
 @media (min-width: 1024px) {
@@ -516,6 +520,59 @@
 
 .simple-page .button {
   margin-top: 28px;
+}
+
+/* ---------- Privacy page (Part B of privacy_text.txt) ---------- */
+.privacy {
+  overflow-wrap: break-word;
+}
+
+.privacy__title {
+  font-size: 22px;
+}
+
+/* "Last updated: …" right under the title. */
+.privacy__title + p {
+  margin-top: 6px;
+  color: var(--color-muted-strong);
+  font-size: 13px;
+}
+
+.privacy h2 {
+  margin-top: 28px;
+  font-size: 18px;
+}
+
+.privacy p,
+.privacy li {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.privacy .text-link {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.privacy p,
+.privacy ul {
+  margin-top: 10px;
+}
+
+.privacy ul {
+  margin-bottom: 0;
+  padding-left: 22px;
+  list-style: square;
+}
+
+.privacy li + li {
+  margin-top: 6px;
+}
+
+@media (min-width: 768px) {
+  .privacy__title {
+    font-size: 28px;
+  }
 }
 
 .config-error {
