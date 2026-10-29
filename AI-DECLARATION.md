@@ -15,7 +15,7 @@ The developer planned the work, made the design decisions and reviewed all outpu
 
 **Content files**
 
-- `actions.json`, `guide.json` and `badges.json` are the files supplied by Bean Co., used unchanged. They contain no AI-written content.
+- `actions.json`, `guide.json`, `badges.json` and `privacy_text.txt` are the files supplied by Bean Co., used unchanged. They contain no AI-written content.
 - The icons and illustrations are the Figma file's own pixel sprites, exported from the frames. The six actions that have no icon in Figma show the Figma leaf icon.
 
 ## Milestone 2

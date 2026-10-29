@@ -1,7 +1,7 @@
 /**
  * Login, session and route guard tests (US-13): the login screen's elements, one message for any wrong
  * credentials, staying logged in across reloads and devices, logging out on one device only, and
- * visitors seeing only the login, registration and forgot-password screens.
+ * visitors seeing only the login, registration, forgot-password and privacy screens.
  */
 import { expect, test } from '@playwright/test'
 import { createStudent, logInThroughUi, newStudent } from './helpers.js'
@@ -90,12 +90,12 @@ test('after "Log out", every protected page redirects to the login screen (US-13
   }
 })
 
-test('a visitor sees only the login, registration and forgot-password screens (US-13 AC6)', async ({ page }) => {
+test('a visitor sees only the login, registration, forgot-password and privacy screens (US-13 AC6)', async ({ page }) => {
   for (const path of PROTECTED) {
     await page.goto(path)
     await expect(page, path).toHaveURL(/\/login$/)
   }
-  for (const path of ['/login', '/register', '/forgot-password']) {
+  for (const path of ['/login', '/register', '/forgot-password', '/privacy']) {
     await page.goto(path)
     await expect(page, path).toHaveURL(new RegExp(`${path}$`))
   }

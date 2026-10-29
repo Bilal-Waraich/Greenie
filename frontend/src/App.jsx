@@ -1,9 +1,9 @@
 /**
  * Routes and route guards (US-13 AC5, AC6).
  *
- * Visitors who are not logged in can open only Log in, Register and the "Forgot password?" page;
- * every other address, including unknown ones, sends them to Log in. Logged-in students who open
- * Log in or Register go to Home.
+ * Visitors who are not logged in can open only Log in, Register, the "Forgot password?" page and the
+ * Privacy page (linked from Register, so it is open to everyone); every other address, including
+ * unknown ones, sends them to Log in. Logged-in students who open Log in or Register go to Home.
  */
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router'
 import { SessionProvider } from './lib/session.jsx'
@@ -11,6 +11,7 @@ import { useSession } from './lib/useSession.js'
 import Home from './pages/Home.jsx'
 import LogAction from './pages/LogAction.jsx'
 import Login from './pages/Login.jsx'
+import Privacy from './pages/Privacy.jsx'
 import Register from './pages/Register.jsx'
 import { NotFound, Placeholder } from './pages/SimplePages.jsx'
 import Success from './pages/Success.jsx'
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
           </Route>
           <Route path="/forgot-password" element={<Placeholder kind="resetPassword" />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route element={<RequireLogin />}>
             <Route path="/" element={<Home />} />
             <Route path="/log" element={<LogAction />} />

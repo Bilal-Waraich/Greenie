@@ -32,6 +32,9 @@ for (const width of WIDTHS) {
     await page.goto('/register')
     await expect(page.getByRole('button', { name: 'Create account' })).toBeVisible()
     await check(page, testInfo, `${width}-register`)
+    await page.goto('/privacy')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await check(page, testInfo, `${width}-privacy`)
 
     const student = newStudent({ nickname: `wide_${width}_${Date.now().toString(36).slice(-6)}` })
     await createStudent(student)
