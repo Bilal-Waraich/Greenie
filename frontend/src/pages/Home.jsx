@@ -1,16 +1,81 @@
 /**
- * S2 Home (US-02, US-04, US-13 AC5): total points, current streak and points earned today, all
- * computed by the database from the student's logs; a prominent "Log an action" button; links to
- * "My history" and "Find students" (milestone 2 pages) and "Log out".
+ * S2 Home (US-02, US-04, US-13 AC5, US-14 AC4, US-09): total points, current streak, points earned
+ * today and the estimated CO2 saved, all computed by the database from the student's logs; a
+ * prominent "Log an action" button; links to "My history", "My badges" and "Find students"; "Log out";
+ * and "Delete my account", which asks for confirmation first (US-09 AC1).
  */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { AppLayout } from '../components/AppLayout.jsx'
-import { getMyStatus, logOut } from '../lib/api.js'
-import { formatNumber, streakLabel } from '../lib/format.js'
+import { deleteMyAccount, getMyBadges, getMyStatus, logOut } from '../lib/api.js'
+import { earnedSummary } from '../lib/badges.js'
+import { messageFor } from '../lib/errors.js'
+import { formatCo2Saved, formatNumber, streakLabel } from '../lib/format.js'
 import { MESSAGES } from '../lib/messages.js'
 import { SPRITES } from '../lib/sprites.js'
 import { usePageSetup } from '../lib/usePageSetup.js'
+
+/**
+ * "Delete my account" with an inline confirmation (US-09 AC1). After deleting, the session on this
+ * device ends and the login screen opens.
+ * @returns {import('react').JSX.Element}
+ */
+function DeleteAccount() {
+  const navigate = useNavigate()
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState('')
+  const questionRef = useRef(null)
+
+  useEffect(() => {
+    if (confirming) questionRef.current?.focus()
+  }, [confirming])
+
+  /**
+   * Deletes the account and all its data, then opens the login screen.
+   * @returns {Promise<void>}
+   */
+  async function handleDelete() {
+    setDeleting(true)
+    setError('')
+    try {
+      await deleteMyAccount()
+      navigate('/login', { replace: true })
+    } catch (deleteError) {
+      setError(messageFor(deleteError.code))
+      setDeleting(false)
+    }
+  }
+
+  if (!confirming) {
+    return (
+      <button type="button" className="text-link danger-link" onClick={() => setConfirming(true)}>
+        Delete my account
+      </button>
+    )
+  }
+  return (
+    <section className="confirm-box" aria-labelledby="delete-question" aria-describedby="delete-explanation">
+      <h2 id="delete-question" ref={questionRef} tabIndex={-1}>
+        {MESSAGES.deleteQuestion}
+      </h2>
+      <p id="delete-explanation">{MESSAGES.deleteExplanation}</p>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="button-row">
+        <button type="button" className="button button--danger" onClick={handleDelete} disabled={deleting}>
+          Delete my account
+        </button>
+        <button type="button" className="button button--secondary" onClick={() => setConfirming(false)} disabled={deleting}>
+          Cancel
+        </button>
+      </div>
+    </section>
+  )
+}
 
 /**
  * The Home screen.
@@ -20,6 +85,7 @@ export default function Home() {
   const headingRef = usePageSetup('Home')
   const navigate = useNavigate()
   const [status, setStatus] = useState(null)
+  const [badges, setBadges] = useState(null)
   const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
@@ -27,6 +93,10 @@ export default function Home() {
     getMyStatus()
       .then((data) => active && setStatus(data))
       .catch(() => active && setLoadError(true))
+    // The badge count is extra information: if it fails, the row simply has no count.
+    getMyBadges()
+      .then((rows) => active && setBadges(rows))
+      .catch(() => {})
     return () => {
       active = false
     }
@@ -81,6 +151,10 @@ export default function Home() {
                 Today: +{formatNumber(status.today_points)}
               </p>
             </div>
+            <p className="co2-line" data-testid="co2-saved">
+              <img src={SPRITES.leaf} alt="" className="pixelated" />
+              {formatCo2Saved(status.co2_saved_g)}
+            </p>
           </>
         )}
       </section>
@@ -97,6 +171,15 @@ export default function Home() {
           </span>
           <span className="row-link__chevron" aria-hidden="true">›</span>
         </Link>
+        <Link className="row-link" to="/badges">
+          <span>
+            <span className="row-link__title">My badges</span>
+            <span className="row-link__subtitle" data-testid="home-badges-summary">
+              {badges ? earnedSummary(badges) : ' '}
+            </span>
+          </span>
+          <span className="row-link__chevron" aria-hidden="true">›</span>
+        </Link>
         <Link className="row-link" to="/students">
           <span>
             <span className="row-link__title">Find students</span>
@@ -105,6 +188,10 @@ export default function Home() {
           <span className="row-link__chevron" aria-hidden="true">›</span>
         </Link>
       </nav>
+
+      <div className="home-account">
+        <DeleteAccount />
+      </div>
     </AppLayout>
   )
 }

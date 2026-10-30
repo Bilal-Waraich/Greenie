@@ -7,7 +7,9 @@
   /* Colours */
   --color-page: #dad7cd;
   --color-surface: #f4f2ec;
+  --color-surface-alt: #e9e7dd;
   --color-ink: #344e41;
+  --color-ink-deep: #1f2e26; /* contrast: rank 3 on orange; Figma #344e41 is 3.34:1 there */
   --color-ink-on-sage: #2e453a; /* contrast: Figma #344e41 is 3.98:1 on sage */
   --color-sage: #a3b18a;
   --color-green: #588157;
@@ -23,6 +25,8 @@
   --color-error-border: #b5533c;
   --color-alert-bg: #ebd3c8;
   --color-gold: #e9c46a;
+  --color-silver: #c3c1b6;
+  --color-peach: #e9c9a8;
   --color-orange: #d98a55;
   --color-on-forest: #f4f2ec;
 

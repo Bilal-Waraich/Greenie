@@ -3,7 +3,9 @@
  */
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { actionDetails, formatCo2, formatNumber, streakDaysLabel, streakLabel, zurichToday } from '../../src/lib/format.js'
+import {
+  actionDetails, daysLabel, formatCo2, formatCo2Saved, formatLogTime, formatNumber, streakDaysLabel, streakLabel, zurichToday,
+} from '../../src/lib/format.js'
 import { errorCode, messageFor } from '../../src/lib/errors.js'
 import { MESSAGES } from '../../src/lib/messages.js'
 
@@ -37,6 +39,28 @@ test('streak labels match Figma S2 and S4', () => {
   assert.equal(streakDaysLabel(1), 'Streak: 1 day')
 })
 
+test('CO2 saved on Home and the success screen, as in Figma S2 and S4 (US-14 AC3, AC4)', () => {
+  assert.equal(formatCo2Saved(0), '≈ 0 g CO₂ saved')
+  assert.equal(formatCo2Saved(40), '≈ 40 g CO₂ saved')
+  assert.equal(formatCo2Saved(4200), '≈ 4.2 kg CO₂ saved')
+})
+
+test('profile streak in days, as in Figma S9', () => {
+  assert.equal(daysLabel(12), '12 days')
+  assert.equal(daysLabel(1), '1 day')
+  assert.equal(daysLabel(0), '0 days')
+})
+
+test('history times in Zürich: Today, Yesterday, otherwise weekday and date (US-05 AC1, Figma S7)', () => {
+  const now = new Date('2026-10-30T10:00:00Z') // Friday 30 Oct, 11:00 in Zürich
+  assert.equal(formatLogTime('2026-10-30T11:41:00Z', now), 'Today, 12:41')
+  assert.equal(formatLogTime('2026-10-29T17:03:00Z', now), 'Yesterday, 18:03')
+  assert.equal(formatLogTime('2026-10-19T16:45:00Z', now), 'Mon 19 Oct, 18:45') // summer time, UTC+2
+  assert.equal(formatLogTime('2026-10-29T22:59:00Z', now), 'Yesterday, 23:59')
+  assert.equal(formatLogTime('2026-10-29T23:01:00Z', now), 'Today, 00:01') // midnight in Zürich, not UTC
+  assert.equal(formatLogTime('2026-11-02T00:30:00Z', new Date('2026-11-02T08:00:00Z')), 'Today, 01:30') // winter time
+})
+
 test('zurichToday uses the Zürich calendar, not the computer\'s', () => {
   assert.equal(zurichToday(new Date('2026-11-02T22:59:00Z')), '2026-11-02')
   assert.equal(zurichToday(new Date('2026-11-02T23:01:00Z')), '2026-11-03')
@@ -53,6 +77,9 @@ test('errors from the database and Supabase Auth map to codes', () => {
   assert.equal(errorCode({ code: 'over_request_rate_limit', status: 429 }), 'rate_limited')
   assert.equal(errorCode({ name: 'AuthRetryableFetchError', message: 'Failed to fetch' }), 'network')
   assert.equal(errorCode({ message: 'Database error saving new user', status: 500 }), 'unknown')
+  assert.equal(errorCode({ code: 'P0001', message: 'cannot_follow_self' }), 'cannot_follow_self')
+  assert.equal(errorCode({ code: '22P02', message: 'invalid input syntax for type uuid: "abc"' }), 'not_found')
+  assert.equal(errorCode({ code: 'same_password', status: 422 }), 'same_password')
 })
 
 test('codes map to the brief\'s wording', () => {

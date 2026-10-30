@@ -1,13 +1,13 @@
 /**
- * Unit tests for src/lib/validation.js (US-01 AC1 to AC4). The same boundaries are tested in the
- * database (supabase/tests/database/signup.test.sql), so browser and database agree.
+ * Unit tests for src/lib/validation.js (US-01 AC1 to AC4, US-10). The same registration boundaries
+ * are tested in the database (supabase/tests/database/signup.test.sql), so browser and database agree.
  * Run with `npm run test:unit`.
  */
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
   charLength, normaliseEmail, parseBirthDate, signUpMetadata, sixteenthBirthday, trimEdges,
-  validateLogin, validateRegistration,
+  validateLogin, validateNewPassword, validateRegistration, validateResetEmail,
 } from '../../src/lib/validation.js'
 import { MESSAGES } from '../../src/lib/messages.js'
 
@@ -107,4 +107,12 @@ test('login form needs an email and a password', () => {
   assert.deepEqual(validateLogin({ email: 'a@b.ch', password: 'x' }), {})
   assert.equal(validateLogin({ email: '', password: 'x' }).email, MESSAGES.emailInvalid)
   assert.equal(validateLogin({ email: 'a@b.ch', password: '' }).password, MESSAGES.passwordMissing)
+})
+
+test('reset password: the email must look like an address; a new password needs at least 8 characters (US-10)', () => {
+  assert.equal(validateResetEmail(' Anna@Uni.CH '), '')
+  assert.equal(validateResetEmail('anna'), MESSAGES.emailInvalid)
+  assert.equal(validateNewPassword('1234567'), MESSAGES.passwordTooShort)
+  assert.equal(validateNewPassword('12345678'), '')
+  assert.equal(validateNewPassword('😀😀😀😀😀😀😀😀'), '')
 })

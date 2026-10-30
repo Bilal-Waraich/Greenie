@@ -1,10 +1,10 @@
 /**
- * Responsive check (brief section 9: mobile-first, from 360 px): every milestone 1 screen at 360, 390,
- * 768 and 1280 px wide has no horizontal scrolling. Full-page screenshots go to test-results/ for the
- * QA report. Runs once, in Chromium.
+ * Responsive check (brief section 9: mobile-first, from 360 px): every screen at 360, 390, 768 and
+ * 1280 px wide has no horizontal scrolling. Full-page screenshots go to test-results/ for the QA
+ * report. Runs once, in Chromium.
  */
 import { expect, test } from '@playwright/test'
-import { createStudent, logInThroughUi, newStudent } from './helpers.js'
+import { createStudent, follow, insertLog, logInThroughUi, newStudent } from './helpers.js'
 
 const WIDTHS = [360, 390, 768, 1280]
 
@@ -35,9 +35,16 @@ for (const width of WIDTHS) {
     await page.goto('/privacy')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await check(page, testInfo, `${width}-privacy`)
+    await page.goto('/forgot-password')
+    await expect(page.getByRole('button', { name: 'Send link' })).toBeVisible()
+    await check(page, testInfo, `${width}-reset-password`)
 
     const student = newStudent({ nickname: `wide_${width}_${Date.now().toString(36).slice(-6)}` })
-    await createStudent(student)
+    const studentId = await createStudent(student)
+    const friend = newStudent({ nickname: `wider_friend_${width}_${Math.random().toString(36).slice(2, 5)}`.slice(0, 20) })
+    const friendId = await createStudent(friend)
+    await insertLog(friendId, 'plant_meal', new Date().toISOString())
+    await follow(studentId, friendId)
     await logInThroughUi(page, student)
     await check(page, testInfo, `${width}-home`)
     await page.goto('/log')
@@ -46,8 +53,22 @@ for (const width of WIDTHS) {
     await page.locator('[data-action-key="green_commute"]').click()
     await expect(page.getByRole('heading', { level: 1, name: /points$/ })).toBeVisible()
     await check(page, testInfo, `${width}-success`)
-    await page.goto('/leaderboard')
-    await expect(page.getByText('Coming in Milestone 2.')).toBeVisible()
-    await check(page, testInfo, `${width}-placeholder`)
+
+    const screens = [
+      ['/leaderboard', 'board-row', 'leaderboard'],
+      ['/leaderboard?tab=following', 'board-row', 'leaderboard-following'],
+      ['/guide', 'guide-list', 'guide'],
+      ['/history', 'history-list', 'history'],
+      ['/badges', 'badge-tile', 'badges'],
+      [`/students?q=${friend.nickname}`, 'search-results', 'find-students'],
+    ]
+    for (const [path, testId, name] of screens) {
+      await page.goto(path)
+      await expect(page.getByTestId(testId).first()).toBeVisible()
+      await check(page, testInfo, `${width}-${name}`)
+    }
+    await page.goto(`/students/${friendId}`)
+    await expect(page.getByRole('button', { name: 'Unfollow' })).toBeVisible()
+    await check(page, testInfo, `${width}-profile`)
   })
 }

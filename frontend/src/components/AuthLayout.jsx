@@ -1,11 +1,12 @@
 /**
- * Frame for the login and registration screens. On wide screens (1024 px and up) a dark green brand
- * panel sits on the left, as in the desktop Figma frames; on smaller screens only the form shows.
+ * Frame for the login, registration and password reset screens. On wide screens (1024 px and up) a
+ * dark green brand panel sits on the left, as in the desktop Figma frames; on smaller screens only the
+ * form shows.
  */
 import { SPRITES } from '../lib/sprites.js'
 
 /**
- * @param {{ variant: 'login' | 'register', children: import('react').ReactNode }} props
+ * @param {{ variant: 'login' | 'register' | 'reset', children: import('react').ReactNode }} props
  * @returns {import('react').JSX.Element}
  */
 export function AuthLayout({ variant, children }) {

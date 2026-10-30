@@ -224,6 +224,131 @@
   font-weight: 600;
 }
 
+/* ---------- Notice banner ("If this email has an account, we sent a link", Figma S10) ---------- */
+.notice {
+  padding: 9px 13px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-card);
+  color: var(--color-forest);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.notice-button {
+  margin-top: 12px;
+}
+
+/* ---------- Danger button and text link (Delete my account) ---------- */
+.button--danger {
+  background: var(--color-error-text);
+  color: var(--color-surface);
+}
+
+.danger-link {
+  color: var(--color-error-text);
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* ---------- Tabs (Figma S5: "Everyone" and "Following") ---------- */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+  padding: 4px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface-alt);
+}
+
+.tabs__tab {
+  min-height: 39px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tabs__tab[aria-selected='true'] {
+  background: var(--color-sage);
+  color: var(--color-ink-on-sage);
+  font-weight: 700;
+}
+
+/* ---------- Empty states (Figma S5 to S8: pixel icon and message) ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 56px;
+  text-align: center;
+}
+
+.empty-state img {
+  width: 48px;
+  height: 48px;
+}
+
+.empty-state__text {
+  color: var(--color-muted-strong);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.empty-state .button {
+  margin-top: 2px;
+}
+
+/* ---------- Badge icon in a small square box (Figma S9, S11) ---------- */
+.badge-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+}
+
+.badge-icon img {
+  width: 30px;
+  height: 30px;
+}
+
+.badge-icon--large {
+  width: 54px;
+  height: 54px;
+}
+
+.badge-icon--large img {
+  width: 40px;
+  height: 40px;
+}
+
+/* ---------- CO2 estimate line (Figma S2, S4; US-14) ---------- */
+.co2-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.co2-line img {
+  width: 16px;
+  height: 16px;
+}
+
 /* ---------- Desktop header with navigation (Figma Header Desktop, Nav Desktop) ---------- */
 .site-header {
   display: none;

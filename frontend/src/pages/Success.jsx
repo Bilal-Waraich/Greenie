@@ -1,6 +1,7 @@
 /**
- * S4 Success (US-03 AC3, US-04): "+N points", the new total and the streak, with "Streak increased!"
- * when this log raised it, and the buttons "Back to Home" and "Log another".
+ * S4 Success (US-03 AC3, US-04, US-14 AC3, US-15 AC4): "+N points", the new total and the streak, with
+ * "Streak increased!" when this log raised it, the estimated CO2 of the action just logged, "New badge!"
+ * with the badge's name when this log earned one, and the buttons "Back to Home" and "Log another".
  *
  * The result comes from the Log screen as navigation state. It is cleared from the browser history at
  * once, so a reload or a direct visit goes back to the Log screen instead of showing an old result.
@@ -8,8 +9,9 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { AppLayout } from '../components/AppLayout.jsx'
-import { formatNumber, streakDaysLabel } from '../lib/format.js'
-import { SPRITES } from '../lib/sprites.js'
+import { formatCo2Saved, formatNumber, streakDaysLabel } from '../lib/format.js'
+import { MESSAGES } from '../lib/messages.js'
+import { badgeSprite, SPRITES } from '../lib/sprites.js'
 import { usePageSetup } from '../lib/usePageSetup.js'
 
 /** Decorative squares around the check mark, placed as in the mobile Figma frame (390 px wide). */
@@ -73,6 +75,19 @@ export default function Success() {
           </p>
           {outcome.streak_increased && <p className="badge">Streak increased!</p>}
         </div>
+        <p className="co2-line co2-line--success" data-testid="co2-logged">
+          <img src={SPRITES.leaf} alt="" className="pixelated" />
+          {formatCo2Saved(outcome.co2_g)}
+        </p>
+        {outcome.new_badges?.map((badge) => (
+          <div key={badge.key} className="new-badge" data-testid="new-badge">
+            <img src={badgeSprite(badge)} alt="" className="pixelated" />
+            <span>
+              <span className="new-badge__title">{MESSAGES.newBadge}</span>
+              <span className="new-badge__name">{badge.label}</span>
+            </span>
+          </div>
+        ))}
         <div className="button-stack">
           <Link className="button" to="/">
             Back to Home

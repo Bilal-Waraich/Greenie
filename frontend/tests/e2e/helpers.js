@@ -4,9 +4,10 @@
  */
 import { createClient } from '@supabase/supabase-js'
 import { expect } from '@playwright/test'
+import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { readLocalStatus, REPO_ROOT } from '../../scripts/local-supabase.mjs'
+import { assertLocalUrl, readLocalStatus, REPO_ROOT } from '../../scripts/local-supabase.mjs'
 import { parsePrivacyText } from '../../src/lib/privacyText.js'
 
 const local = readLocalStatus()
@@ -24,6 +25,90 @@ export const ACTIONS = JSON.parse(readFileSync(join(REPO_ROOT, 'actions.json'), 
 
 /** The repository's privacy_text.txt, as the app should show it. */
 export const PRIVACY = parsePrivacyText(readFileSync(join(REPO_ROOT, 'privacy_text.txt'), 'utf8'))
+
+/** The repository's guide.json, as the Guide page should show it. */
+export const GUIDE = JSON.parse(readFileSync(join(REPO_ROOT, 'guide.json'), 'utf8'))
+
+/** The repository's badges.json. */
+export const BADGES = JSON.parse(readFileSync(join(REPO_ROOT, 'badges.json'), 'utf8'))
+
+/**
+ * Runs SQL against the LOCAL database (for fast test data, such as many students at once).
+ * @param {string} sql
+ * @returns {string} psql's output, one row per line, columns separated by "|".
+ */
+export function runSql(sql) {
+  return execFileSync('psql', [assertLocalUrl(local.dbUrl), '-v', 'ON_ERROR_STOP=1', '--quiet', '--no-psqlrc', '-At'], {
+    input: sql,
+    encoding: 'utf8',
+  })
+}
+
+/**
+ * Creates students directly in the local database (the sign-up trigger creates their profiles), each
+ * with one log worth the given points today. They can't log in (no password).
+ * @param {string[]} nicknames
+ * @param {number} pointsToday
+ * @returns {void}
+ */
+export function createStudentsWithPoints(nicknames, pointsToday) {
+  const values = nicknames.map((nickname) => `('${nickname}')`).join(', ')
+  runSql(`
+    with new_students as (
+      insert into auth.users (id, email, raw_user_meta_data)
+      select gen_random_uuid(), lower(n.nickname) || '@greenie.test',
+        jsonb_build_object('nickname', n.nickname, 'first_name', 'Bulk', 'last_name', 'Student',
+                           'date_of_birth', '2000-01-01', 'university', 'Test University')
+      from (values ${values}) as n(nickname)
+      returning id
+    )
+    insert into public.action_logs (user_id, action_key, points, co2_g)
+    select id, 'recycle_can', ${Number(pointsToday)}, 100 from new_students;
+  `)
+}
+
+/**
+ * Deletes local students whose nickname starts with a prefix (with their logs and follows).
+ * @param {string} prefix - Letters, digits and underscores only.
+ * @returns {void}
+ */
+export function deleteStudentsByPrefix(prefix) {
+  if (!/^[A-Za-z0-9_]+$/.test(prefix)) throw new Error('deleteStudentsByPrefix: unsafe prefix')
+  runSql(`delete from auth.users where id in (select id from public.users where nickname like '${prefix}%');`)
+}
+
+/**
+ * Makes one student follow another, directly in the local database.
+ * @param {string} followerId
+ * @param {string} followedId
+ * @returns {Promise<void>}
+ */
+export async function follow(followerId, followedId) {
+  const { error } = await admin.from('follows').insert({ follower_id: followerId, followed_id: followedId })
+  if (error) throw new Error(`follow: ${error.message}`)
+}
+
+/**
+ * Waits for the newest email to an address in the local mail viewer (Mailpit) and returns the first
+ * link in it that points at the local Supabase Auth server.
+ * @param {string} email
+ * @param {number} [sentAfter] - Only emails received after this time (ms since 1970).
+ * @returns {Promise<string>} The link, with HTML entities decoded.
+ */
+export async function emailedLink(email, sentAfter = 0) {
+  const mailUrl = assertLocalUrl(local.mailUrl)
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const search = await fetch(`${mailUrl}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`).then((response) => response.json())
+    const message = (search.messages ?? []).find((entry) => Date.parse(entry.Created) >= sentAfter - 1000)
+    if (message) {
+      const full = await fetch(`${mailUrl}/api/v1/message/${message.ID}`).then((response) => response.json())
+      const href = full.HTML.match(/href="([^"]*\/auth\/v1\/verify[^"]*)"/)
+      if (href) return href[1].replaceAll('&amp;', '&')
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
+  throw new Error(`No email with a link arrived for ${email}`)
+}
 
 let counter = 0
 
