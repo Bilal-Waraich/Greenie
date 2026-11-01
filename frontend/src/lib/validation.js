@@ -130,6 +130,24 @@ export function validateLogin(values) {
 }
 
 /**
+ * Validates the "Reset password" form (US-10 AC1).
+ * @param {string} email
+ * @returns {string} The error message, or '' when the address looks valid.
+ */
+export function validateResetEmail(email) {
+  return EMAIL_PATTERN.test(normaliseEmail(email)) ? '' : MESSAGES.emailInvalid
+}
+
+/**
+ * Validates a new password (US-10 AC2): at least 8 characters, as at registration.
+ * @param {string} password
+ * @returns {string} The error message, or '' when the password is long enough.
+ */
+export function validateNewPassword(password) {
+  return charLength(password ?? '') < MIN_PASSWORD_LENGTH ? MESSAGES.passwordTooShort : ''
+}
+
+/**
  * Builds the sign-up metadata the database trigger reads (trimmed; date as YYYY-MM-DD).
  * Call only after validateRegistration returned no errors.
  * @param {{ nickname: string, firstName: string, lastName: string, birthDate: string, university: string }} values

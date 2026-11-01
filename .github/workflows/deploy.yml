@@ -1,9 +1,10 @@
 # Greenie deployment. Runs on every push to main, and by hand from the Actions tab ("Run workflow").
 #
-# 1. Checks actions.json, privacy_text.txt and the repository settings.
-# 2. Builds the front end with the Supabase URL and publishable key from the repository variables.
-# 3. Applies new database migrations to the Supabase project and loads actions.json into it
-#    (repository secret SUPABASE_DB_URL, the Session pooler connection string).
+# 1. Checks actions.json, badges.json, guide.json, privacy_text.txt and the repository settings.
+# 2. Builds the front end with the Supabase URL and publishable key from the repository variables
+#    (guide.json and privacy_text.txt are built into the site).
+# 3. Applies new database migrations to the Supabase project and loads actions.json and badges.json
+#    into it (repository secret SUPABASE_DB_URL, the Session pooler connection string).
 # 4. Publishes the site to GitHub Pages.
 # If any step fails, the site is not updated. The README explains the settings.
 name: Deploy
@@ -44,7 +45,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Check actions.json and privacy_text.txt
+      - name: Check the configuration files
         run: node scripts/check-config.mjs
 
       - name: Check the repository variables and secret
@@ -94,6 +95,11 @@ jobs:
         run: |
           command -v psql >/dev/null || { sudo apt-get update && sudo apt-get install -y postgresql-client; }
           node scripts/actions-to-sql.mjs | psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 --quiet --no-psqlrc
+
+      - name: Load badges.json into the database
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/badges-to-sql.mjs | psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 --quiet --no-psqlrc
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v4

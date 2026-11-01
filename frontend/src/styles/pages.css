@@ -77,7 +77,7 @@
 
 .points-card {
   /* Reserve the loaded height, so the page doesn't jump when the values arrive. */
-  min-height: 158px;
+  min-height: 186px;
   margin-top: 14px;
   padding: 20px;
   border: var(--border-thick) solid var(--color-ink);
@@ -332,6 +332,23 @@
   padding-top: 92px;
 }
 
+.auth__main--reset {
+  padding-top: 56px;
+}
+
+.auth__main--reset .page-intro {
+  margin-top: 12px;
+}
+
+.auth__main--reset .auth-form {
+  margin-top: 12px;
+}
+
+/* The live region stays in the form (so screen readers announce the notice) but takes no space when empty. */
+.form-status:empty {
+  margin-top: -9px;
+}
+
 .auth-brand {
   display: flex;
   align-items: center;
@@ -511,7 +528,311 @@
   }
 }
 
-/* ---------- Simple pages (placeholders, not found) ---------- */
+/* ---------- Lists of cards: guide entries, history, search results (Figma S6, S7, S8) ---------- */
+.page-field {
+  margin-top: 14px;
+}
+
+.card-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row-card {
+  display: block;
+  min-height: 61px;
+  padding: 10px 14px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+}
+
+.row-card--with-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.row-card__value {
+  flex: none;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.page-message {
+  margin-top: 16px;
+}
+
+/* ---------- Leaderboard (S5) ---------- */
+.board {
+  display: grid;
+  gap: 11px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+  min-height: 50px;
+  padding: 0 14px 0 10px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.board-row--me {
+  background: var(--color-highlight);
+}
+
+.board-row__rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface-alt);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.board-row__rank--first { background: var(--color-gold); }
+.board-row__rank--second { background: var(--color-silver); }
+.board-row__rank--third { background: var(--color-orange); color: var(--color-ink-deep); }
+.board-row__rank--me { background: var(--color-peach); }
+
+.board-row__name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.board-row__points {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.board-row__points img {
+  width: 20px;
+  height: 20px;
+}
+
+.board-gap {
+  margin-top: 10px;
+  color: var(--color-muted-strong);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.board--pinned {
+  margin-top: 10px;
+}
+
+/* ---------- Student profile (S9) ---------- */
+.profile-card {
+  margin-top: 8px;
+  padding: 22px 20px 24px;
+  border: var(--border-thick) solid var(--color-ink);
+  background: var(--color-surface-alt);
+  box-shadow: var(--shadow-block);
+}
+
+.profile-card__name {
+  overflow-wrap: anywhere;
+  font-size: 28px;
+}
+
+.profile-card__university {
+  margin-top: 8px;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.profile-card__stats {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+}
+
+.profile-card__stats div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile-card__stats dt {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.profile-card__stats dd {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.profile-card__badges-title {
+  margin-top: 22px;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.profile-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-card__no-badges {
+  margin-top: 6px;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.profile-button {
+  margin-top: 24px;
+}
+
+/* ---------- My badges (S11) ---------- */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px 16px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.badge-tile--earned {
+  background: var(--color-card);
+}
+
+.badge-tile:not(.badge-tile--earned) .badge-icon img {
+  opacity: 0.3;
+}
+
+.badge-tile__name {
+  margin-top: 6px;
+  color: var(--color-tab-inactive); /* contrast: Figma #8e9486 is 2.79:1 on the tile */
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.badge-tile--earned .badge-tile__name {
+  color: var(--color-ink);
+}
+
+.badge-tile__rule {
+  color: var(--color-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.badge-tile--earned .badge-tile__rule {
+  color: var(--color-muted-strong); /* contrast: Figma #55695c is 3.57:1 on the earned tile */
+}
+
+@media (min-width: 768px) {
+  .badge-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Success additions (S4: CO2 of the log, new badge) ---------- */
+.co2-line--success {
+  justify-content: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.new-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 10px 16px 10px 14px;
+  border: var(--border-thin) solid var(--color-ink);
+  background: var(--color-highlight);
+  text-align: left;
+}
+
+.new-badge img {
+  width: 32px;
+  height: 32px;
+}
+
+.new-badge__title {
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.new-badge__name {
+  display: block;
+  color: var(--color-muted-strong); /* contrast: Figma #55695c is 4.48:1 on the yellow box */
+  font-size: 12px;
+}
+
+/* ---------- Delete my account (Home) ---------- */
+.home-account {
+  margin-top: 24px;
+}
+
+.confirm-box {
+  padding: 16px;
+  border: var(--border-thin) solid var(--color-error-border);
+  background: var(--color-surface);
+}
+
+.confirm-box h2 {
+  font-size: 18px;
+}
+
+.confirm-box p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.confirm-box .button-row {
+  margin-top: 16px;
+}
+
+/* ---------- Simple pages (not found) ---------- */
 .simple-page__text {
   margin-top: 16px;
   color: var(--color-muted-strong);

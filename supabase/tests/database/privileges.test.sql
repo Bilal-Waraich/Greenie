@@ -14,20 +14,40 @@ select no_plan();
 -- The API exposes exactly these functions in public; anything else would be an accidental endpoint.
 select functions_are(
   'public',
-  array['nickname_available', 'get_my_status', 'get_log_actions', 'log_action'],
+  array[
+    'nickname_available', 'get_my_status', 'get_log_actions', 'log_action',
+    'search_students', 'get_student_profile', 'follow_student', 'unfollow_student', 'get_leaderboard',
+    'get_my_history', 'delete_my_account', 'get_my_badges'
+  ],
   'public schema has only the intended API functions'
 );
 
--- Visitors can only check a nickname; logged-in students can call all four.
+-- Visitors can only check a nickname; logged-in students can call every function.
 select ok(has_function_privilege('anon', 'public.nickname_available(text)', 'execute'), 'anon can call nickname_available');
-select ok(not has_function_privilege('anon', 'public.get_my_status()', 'execute'), 'anon cannot call get_my_status');
-select ok(not has_function_privilege('anon', 'public.get_log_actions()', 'execute'), 'anon cannot call get_log_actions');
-select ok(not has_function_privilege('anon', 'public.log_action(text)', 'execute'), 'anon cannot call log_action');
 select ok(has_function_privilege('authenticated', 'public.nickname_available(text)', 'execute'), 'authenticated can call nickname_available');
-select ok(has_function_privilege('authenticated', 'public.get_my_status()', 'execute'), 'authenticated can call get_my_status');
-select ok(has_function_privilege('authenticated', 'public.get_log_actions()', 'execute'), 'authenticated can call get_log_actions');
-select ok(has_function_privilege('authenticated', 'public.log_action(text)', 'execute'), 'authenticated can call log_action');
-select ok(not has_function_privilege('public', 'public.log_action(text)', 'execute'), 'PUBLIC has no execute on log_action');
+select is_empty(
+  $$ select f.signature, r.role
+     from (values
+       ('public.get_my_status()'), ('public.get_log_actions()'), ('public.log_action(text)'),
+       ('public.search_students(text)'), ('public.get_student_profile(uuid)'), ('public.follow_student(uuid)'),
+       ('public.unfollow_student(uuid)'), ('public.get_leaderboard(text)'), ('public.get_my_history()'),
+       ('public.delete_my_account()'), ('public.get_my_badges()')
+     ) as f(signature)
+     cross join (values ('anon'), ('public')) as r(role)
+     where has_function_privilege(r.role, f.signature, 'execute') $$,
+  'anon and PUBLIC cannot call any function for logged-in students'
+);
+select is_empty(
+  $$ select f.signature
+     from (values
+       ('public.get_my_status()'), ('public.get_log_actions()'), ('public.log_action(text)'),
+       ('public.search_students(text)'), ('public.get_student_profile(uuid)'), ('public.follow_student(uuid)'),
+       ('public.unfollow_student(uuid)'), ('public.get_leaderboard(text)'), ('public.get_my_history()'),
+       ('public.delete_my_account()'), ('public.get_my_badges()')
+     ) as f(signature)
+     where not has_function_privilege('authenticated', f.signature, 'execute') $$,
+  'authenticated can call every function for logged-in students'
+);
 
 -- Nothing in the private schema is reachable from the API.
 select ok(not has_schema_privilege('anon', 'private', 'usage'), 'anon has no usage on schema private');
@@ -56,10 +76,11 @@ select is_empty(
 );
 select is(
   (select count(*)::integer from pg_class c join pg_namespace n on n.oid = c.relnamespace
-   where n.nspname = 'public' and c.relname in ('users', 'actions', 'action_logs', 'follows') and c.relrowsecurity),
-  4,
-  'row-level security is enabled on all four tables'
+   where n.nspname = 'public' and c.relname in ('users', 'actions', 'action_logs', 'follows', 'badges') and c.relrowsecurity),
+  5,
+  'row-level security is enabled on all five tables'
 );
+select tables_are('public', array['users', 'actions', 'action_logs', 'follows', 'badges'], 'public schema has exactly the five tables');
 select is_empty($$ select * from pg_policies where schemaname = 'public' $$, 'no RLS policies exist (direct access is denied)');
 
 -- Every API function runs as its owner with an empty search path.

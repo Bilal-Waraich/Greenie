@@ -1,13 +1,16 @@
 /**
  * Login, session and route guard tests (US-13): the login screen's elements, one message for any wrong
  * credentials, staying logged in across reloads and devices, logging out on one device only, and
- * visitors seeing only the login, registration, forgot-password and privacy screens.
+ * visitors seeing only the login, registration, password reset and privacy screens.
  */
 import { expect, test } from '@playwright/test'
 import { createStudent, logInThroughUi, newStudent } from './helpers.js'
 
-/** Every address of a logged-in page in milestone 1, plus an unknown one. */
-const PROTECTED = ['/', '/log', '/log/success', '/leaderboard', '/guide', '/history', '/students', '/does-not-exist']
+/** Every address of a logged-in page, plus an unknown one. */
+const PROTECTED = [
+  '/', '/log', '/log/success', '/leaderboard', '/leaderboard?tab=following', '/guide', '/history', '/badges',
+  '/students', '/students?q=eco', '/students/00000000-0000-4000-8000-000000000000', '/does-not-exist',
+]
 
 test('the login screen has email, masked password, "Log in" and both links (US-13 AC1)', async ({ page }) => {
   await page.goto('/login')
@@ -19,7 +22,7 @@ test('the login screen has email, masked password, "Log in" and both links (US-1
   await page.goto('/login')
   await page.getByRole('link', { name: 'Forgot password?' }).click()
   await expect(page).toHaveURL(/\/forgot-password$/)
-  await expect(page.getByText('Coming in Milestone 2.')).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Reset password' })).toBeVisible()
 })
 
 test('a wrong password and an unknown email show the same single message (US-13 AC2)', async ({ page }) => {
@@ -90,12 +93,12 @@ test('after "Log out", every protected page redirects to the login screen (US-13
   }
 })
 
-test('a visitor sees only the login, registration, forgot-password and privacy screens (US-13 AC6)', async ({ page }) => {
+test('a visitor sees only the login, registration, password reset and privacy screens (US-13 AC6)', async ({ page }) => {
   for (const path of PROTECTED) {
     await page.goto(path)
     await expect(page, path).toHaveURL(/\/login$/)
   }
-  for (const path of ['/login', '/register', '/forgot-password', '/privacy']) {
+  for (const path of ['/login', '/register', '/forgot-password', '/reset-password', '/privacy']) {
     await page.goto(path)
     await expect(page, path).toHaveURL(new RegExp(`${path}$`))
   }

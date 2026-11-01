@@ -14,6 +14,7 @@ const DATABASE_CODES = [
   'email_taken',
   'nickname_taken',
   'too_young',
+  'cannot_follow_self',
 ]
 
 /**
@@ -27,6 +28,8 @@ export function errorCode(error) {
   const message = typeof error.message === 'string' ? error.message.trim() : ''
   if (DATABASE_CODES.includes(message)) return message
   if (message.startsWith('invalid_input: ')) return message
+  // A malformed id in an address (for example /students/abc) is an unknown student.
+  if (error.code === '22P02') return 'not_found'
   if (error.status === 429 || /rate_limit/.test(error.code ?? '')) return 'rate_limited'
   if (error.code === 'user_already_exists' || error.code === 'email_exists') return 'email_taken'
   if (typeof error.code === 'string' && /^[a-z_]+$/.test(error.code)) return error.code
